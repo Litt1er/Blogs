@@ -271,3 +271,183 @@ git tag -l 'v1.1.0'
 // 创建标签，标签名为v1.4,标签信息为 version 1.4
 git tag -a v1.4 -m 'version 1.4'
 ```
+#### 创建Git分支
+Git中默认的分支名是master。Git中的master分支并不是一个特殊的分支，master分支和其他的分支没有什么区别。之所以大多数仓库都有master分支，是因为git init命令默认创建的分支是master。
+
+Git创建分支的命令很简单，如下：
+```
+// 新建一个testing分支
+git branch testing
+```
+注意，这种方式只会新建一个testing分支，但是并不会切换到testing分支下。
+
+另外介绍一下Git中的HEAD指针，HEAD指针指向当前所在的本地分支，可以将HEAD指针理解成当前分支的别名。默认是master分支，则HEAD指向的是master分支；如果切换到testing分支下，则HEAD指向的是testing分支。
+#### 分支切换
+Git中分支切换使用checkout命令，如下：
+```
+// 切换到testing目录下
+git checkout testing
+```
+此时HEAD指针也指向了testing分支。另外需要注意的是，切换分支时，工作目录也会对应的改变。
+
+另外一种切换分支的方式是：
+```
+// 这种方式适用于不存在testing分支的情况
+git checkout -b testing
+```
+上述命令实际上是两条命令的简写：
+```
+// 新建testing分支
+git branch testing
+// 切换到testing分支
+git checkout testing
+```
+#### 分支合并
+分支合并使用的是git merge命令，假设现在的工作目录是master，想要合并testing分支，则命令如下：
+```
+// 将testing分支合并到master分支
+git merge testing
+```
+#### 分支删除
+在合并完testing分支之后，可能testing分支对我们来说已经没有用了，这时可以将testing分支删除，删除命令如下：
+```
+// 删除testing分支
+git branch -d testing
+```
+#### 冲突标示
+在合并分支时，不可避免的会出现冲突，出现冲突后git会标示出来，大概如下：
+```
+<<<<<<< HEAD:index.html
+  <div id="footer">contact : email.support@github.com</div>
+  =======
+  <div id="footer">
+   please contact us at support@github.com
+  </div>
+  >>>>>>> iss53:index.html
+```
+======号上面是HEAD分支，也就是当前分支的内容，======号下面是合并分支，这里是iss53分支的内容。出现冲突的原因是两个分支对同一个文件的同一行做了修改，这种情况下需要解决手动解决冲突。
+#### 分支管理
+##### 查看当前分支列表
+使用git branch命令可以查看当前的分支列表，如下：
+```
+// 查看当前分支列表
+git branch
+```
+列出的分支列表中，如果某个分支名前有*号，表示该分之是目前所处的分支，也就是HEAD所指向的分支。
+##### 查看每个分支最后的一条提交信息
+使用git branch -v命令，能够看到每个分支最后的提交信息，如下：
+```
+git branch -v
+```
+##### 查看已合并到当前分支的分支
+使用git branch --merged命令，可以查看当前有哪些分支已经合并到当前分支了，如下：
+```
+git branch --merged
+```
+##### 查看未合并到当前分支的分支
+使用git branch --no-merged，可以查看当前有哪些分支没有合并到当前分支，如下：
+```
+git branch --no-merged
+```
+#### 推送本地分支
+可以使用git push (remote) (branch) 来将本地分支推送到远程仓库分支，命令如下：
+```
+// 推送本地的testing分支到远程origin仓库的testing分支
+git push origin testing
+
+// 推送本地的testing分支到远程origin仓库的somebranch分支
+git push origin testing:somebranch
+```
+#### 跟踪远程仓库分支
+当clone一个仓库时，Git通常会在本地自动创建一个master分支，该master分之跟踪的是origin/master，即远程仓库origin的master分支。当然，也可以跟踪其他的分支，命令格式是：git checkout -b [branch] [remotename]/[branch],针对该命令，git提供了--track的快捷方式，命令如下：
+```
+// 在本地新建一个serverfix分支，该分支跟踪的是远程仓库origin的serverfix分支
+git checkout --track origin/serverfix
+
+// 该命令和上面所表达的含义一样
+git checkout -b serverfix origin/serverfix
+```
+当然，也可以将本地分支的名字和远程分支的名字设置成不一样，命令如下：
+```
+// 在本地新建一个sf分支，该分之跟踪的是远程仓库origin的serverfix分支
+git checkout -b sf origin/serverfix
+```
+可以设置本地分支跟踪某一个远程分支，也可以修改本地分支正在跟踪的远程分支，使用的参数是-u或者--set-upstream-to，命令如下：
+```
+// 设置当前本地分支跟踪远程仓库origin的serverfix分支
+git branch -u origin/serverfix
+
+// 设置当前分支跟踪远程仓库origin的serverfix分支
+git branch --set-upstream-to origin/serverfix
+```
+#### 查看所有本地分支正在跟踪的远程分支
+使用git branch -vv命令，可以查看所有本地分支正在跟踪的远程分支，而且会列出本地分支是否领先，或者落后远程分支，命令如下：
+```
+// 查看本地分支正在跟踪的远程分支
+git branch -vv
+```
+#### 拉取远程分支
+拉取远程分支可以使用git fetch命令或者git pull命令。两者的区别是：git fetch命令拉取下来的数据，不会修改工作目录中的内容，需要用户自己合并，也就是使用git merge命令。而git pull相当于将这两个命令合并成一个命令，先git fetch，然后git merge。
+#### 删除远程分支
+删除远程分支使用的命令如下：
+```
+// 删除远程仓库origin的serverfix分支
+git push origin --delete serverfix
+```
+#### 变基
+在Git中整合分支除了merge之外，还有一种方法就是变基（rebase）。看下面的例子：
+
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCE822dea078fd856f848ca164a5a2c9478/13777)
+
+该分之从C2开始产生了分叉，目前有master分支和experiment分支，使用git merge命令，当然可以将experiment分支和master分支合并。前面介绍过，使用merge命令，实际上是将两个分支的最新快照C3、C4以及二者的最近祖先C2进行了三方合并，合并结果进行了一次新的提交，效果如下：
+
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCEd78f91f5693ee2eabc08ff2928f75108/13780)
+
+除了使用merge之外，还可以使用变基，变基对应的是rebase命令。使用如下的命令：
+```
+git checkout experiment
+git rebase master
+```
+解释一下上述两条命令达到的效果。首先找到两个分支的共同祖先，即experiment、master分支的共同祖先C2，然后对比当前分支experiment相对于该祖先的历次提交，提取相应的修改并存为临时文件；然后将当前分支指向目标基底，也就是master分支C3，将之前保存的临时文件依序应用在目标基底上。实际达到了下面的效果：
+
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCEf182d69233b756b904263844421819e2/13782)
+
+即：将C4中的修改变基到C3上。
+
+注意：到这里还没有完成所有工作，还需要进行一次合并：
+```
+git checkout master
+git merge experiment
+```
+最终，master分支指向了最新的提交，效果如下图：
+
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCE1c87b1ba448ee1017f03f3e35ee7a347/13826)
+
+和直接使用merge命令最终达到的效果是一样的。
+##### 变基 VS 合并
+既然变基和合并最终达到的效果是一样的，那么Git为何提供了这两种方式呢？以及哪种方式更好呢？其实，如果这两种方式都试一下的话，会发现两者的区别。
+
+变基和合并虽然在最终的结果上是一样的，但是过程是不一样的，这个过程体现在提交历史。使用合并，两个分支的提交历史是参杂在一起的；而使用变基，提交历史看起来更为整洁，先做了A功能，A功能完成之后又做了B功能。这样看来，使用变基似乎好一些，其实不然。这两种方式其实对应了对提交历史认识的两种观点。
+1. 一种观点认为，仓库的提交历史就是用来记录**实际发生过什么**，提交历史是不能随意改动的。从这个观点来说，使用分支更为合理，因为分支真实的记录下来了提交历史。
+2. 另一种观点认为，仓库的提交历史是**项目中发生的事情**，记录越简洁，越容易理解越好。从这个角度来讲，使用变基更为合理，因为变基的提交日志更为整洁。
+
+这里不讨论使用哪种方式更好，这个问题没有一个简单的答案，更多的是根据项目需求来决定。
+##### 变基的另一个例子
+先来看看下面仓库的提交历史：
+
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCEac50168e79eaf56749af583a0264d6e5/13784)
+
+从C2开始产生了server分支，从C3又产生了client分支。假设现在有这样的需求：将在client分支上，但是不再server分支上的改变，也就是C8和C9合并到master分支上，应该如何做呢？变基提供了这样的命令：
+```
+// 取出client分支，找出处于client分支和server分支共同的祖先之后的修改，然后将这些修改应用到master分支上
+git rebase --onto master server client
+```
+达到的效果如下：
+
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCEa84899b71f82f3f342709db2ff1d3083/13786)
+
+现在可以快速合并到master分支：
+```
+git checkout master
+git merge client
+```
