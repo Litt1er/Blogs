@@ -1,76 +1,38 @@
-macOS下查看隐藏文件可以使用快捷键commond+shift+.
+### 集中化版本控制系统
+集中化版本控制系统（Centralized Version Control Systems，简称CVCS），用于记录某个时间点对项目做了哪些修改，包括增加、删除等。如CVS、SVN等，都是集中化版本控制系统。集中化版本控制系统有一个单一的集中管理的服务器，保存所有文件的修订版本，而协同工作的开发者通过客户端连接到该服务器，并且可以从该服务器获取数据，修改记录，或者提交更新。集中化版本控制系统实现效果如下：
 
-github是一个基于git的代码托管平台。付费用户可以建立私人仓库，一般的免费用户只能使用公共仓库，也就是代码是公开的。
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCEa66deb8ea1134cf418559e5480a4427f/13892)
 
-一：
+集中化版本控制系统使用比较方便，但是其缺点也是比较明显的。如果集中管理的服务器故障，那么在服务器故障期间内，任何人都无法提交更新，也就无法协同工作。如果服务器硬盘发生损坏，又没有做恰当的备份，虽然发生的几率非常小，但是一旦发生，项目的所有数据都将丢失，包括项目源数据和变更历史。为了解决集中化版本控制系统的缺点，于是就有了分布式版本控制系统。
+### 分布式版本控制系统
+分布式版本控制系统（Distributed Version Control System，简称DVCS），最出名的就是Git。在分布式版本控制系统中，客户端从服务器并不只是提取最新版本的文件快照，而是把代码仓库完整的镜像下来，包括整个项目的提交历史。这样一来，即使服务器发生故障，使用任何一个镜像都可以快速的恢复。分布式版本控制系统的实现效果如下：
 
-注册github帐号，注册地址：https://github.com/
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCEd50d3521cd8d4cf6ffad4b9a1c63a766/13894)
 
-二：
+### Git分支模型
+版本控制系统通常都会支持分支。分支可以使开发者从主线版本脱离出来，来做一些其他尝试性的工作。在部分版本控制系统中，比如SVN，新建分支需要完全创建一个源代码目录的副本。这在一些大型项目中，该过程会耗费几分钟，甚至更久的时间。
 
-安装git：https://git-scm.com/downloads  从这里下载git安装。验证是否安装成功方法：在terminal中输入git 命令，如果可以被系统识别，说明git安装成功。
+Git可以很快的创建一个分支，时间通常在几秒钟之内，这也是Git为何如此流行的一个原因。这里再介绍一个Git和其他版本控制系统的区别。很多版本控制系统记录的是文件的变化，比如两次提交之间，SVN就是记录了两次提交的不同，也就是文件变化。Git记录的不是文件变化，而是一些列不同时刻的文件快照。
 
-三：
-
-安装GitHub Desktop，操作github的桌面客户端,使用客户端操作非常方便，下载地址https://desktop.github.com/
-
-四:
-
-启动GitHub Desktop，使用注册的账号登录，登录后新建一个Repository(代码仓库)。新建的Repository只是存在于本地，并没有同步到github网站上，点击[Publish repository]按扭将新建的Repository同步到github上。
-
-五：
-
-新建的Repository是空的，之后可以向里面添加工程、文件，添加之后更新到github就可以了。
-
-
-
-## gitLab命令
-一：克隆项目，在本地生成同名目录，并且目录中会有项目文件
+Git新建一个分支，其实就是新建了一个指针，指针指向了某一时刻的提交。比如使用git branch新建一个分支：
 ```
-git clone git@iZbp1h7fx16gkr9u4gk8v3Z:root/test.git
+git branch testing
 ```
-二：上传文件
-（1）将文件添加到索引中：
-```
-git add test.sh
-```
-（2）将文件提交到本地仓库
-```
-git commit -m "test.sh"
-```
-（3）将文件同步到Gitlab服务器
-```
-git push -u origin master
-```
+实际上是新建了一个指针，该指针指向当前所在的提交对象，如下图：
 
-(4) 备用
-```
-如果你已经使用过git了，那么这一步对你来说可以跳过了。整体来说比较简单的。下面的$project_root代表工程根目录
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCE4dadf21b0cfc16c316f95cc8c5317080/13940)
 
-进入工程目录 cd $project_root
-初始化git仓库 git init
-添加文件到仓库 git add .
-提交代码到仓库 git commit -m 'init commit'
-链接到git server git remote add origin git@example.com:namespace/projectname.git
-push代码到服务器 git push origin master
-```
-(5) 设置忽略项
-```
-有一些文件或文件夹是我们不想要被版本控制的，比如.DS_Store build\ xcuserdata thumbs.db，git提供了一种忽略的方案。
+新建了testing指针，testing指针和master指针指向了同一个提交对象 f30ab。
 
-在项目根目录下创建.gitignore文件，然后把需要忽略的文件或文件夹名写进去。这样就可以忽略这些文件受版本控制啦。
+之后加入切换到了testing分支，然后对testing分支做了修改和提交，testing指针会随之向后移动，但是master指针是不会改变的，如下图：
 
-svn也提供了这样忽略的方案，svn也可以设置全局忽略。svn的此配置放在~/.subversion/config中global-ignores的值。
-```
-(6) 查看当前git状态
-```
-git status
-git branch -vv
-git checkout -b develop origin/develop
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCE147a64dd09e8c7e072f91a6ab877b31c/13942)
 
-```
+testing指针已经改变，但是master指针并没有随之移动。这正是分支的意义所在。
 
-### git命令
+上面图片中出现了HEAD指针，简单介绍下HEAD指针。Git中的HEAD指针指向的是当前的分支。拿上图举例，如果当前在master分支，那么HEAD指向的就是master，如果当前在testing分支，那么HEAD指向的就是testing。
+
+### Git命令
 #### 配置用户信息
 使用Git之前需要首先配置个人信息，包括个人的用户名和电子邮件地址。每次Git提交时，都会引用用户名和电子邮件，说明是谁提交了更新。配置用户信息的命令：
 ```
