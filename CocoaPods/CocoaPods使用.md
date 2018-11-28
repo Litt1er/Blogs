@@ -133,5 +133,113 @@ pod search 框架名
 ![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCEb4d4e8c5d6a948ac8006674e8af80926/14133)
 
 ### CocoaPods的大概工作原理
+CocoaPods的使用相对来说是比较简单的。那么CocoaPods是如何完成这些工作的？以及为何生成了一个Pods工程？
 
+实际上，CocoaPods是将所有依赖的第三方库都放到了Pods项目中
+
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCEd2be0dbcf4b9f592813a347a34110bd7/14152)
+
+所有的源码管理工作从住项目转移到了Pods项目中。
+
+Pods项目最终会编译成一个libPods-项目名.a的文件，主项目只需要依赖这个.a文件即可。
+
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCEd5d274119a6bea4ddb22cedea5dc0efa/14154)
+
+对于libPods-TestCocoaPods.a这个文件，可以将其理解为各个第三方库的.a文件的集合。在本例中,libPods-TestCocoaPods.a就是libPureLayout.a和libSDWebImage.a的集合。
+
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCE50f19c5d27540fa1c7a2c845c97e5318/14157)
 ## 开源项目支持CocoaPods
+下面介绍一下如何让自己的开源项目支持CocoaPods。
+### gitHub上新建仓库
+首先，需要在gitHub上新建仓库，新建仓库时记得选择开源协议，通常选择MIT，另外就是设置成项目为public。这里新建一个仓库ACMoreResponseButton。
+
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCE6cdf6a1501045afa298ea1bc82af656d/14170)
+
+记得选择开源协议为MIT：
+
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCE258e0ece133a7e1b5bedbb41290f78d6/14225)
+
+#### 各种开源协议
+开源协议有多种，如MIT、BSD等，常见的有6种，关于这6种开源协议的区别，网上有一张图描述的是非常清楚的，这里贴一下：
+
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCE9508e4c043594d9842a912f187d0f850/14099)
+
+可以看到，MIT许可证是要求最不严格的许可证，可以给其他开发者更大的空间。这也是为何多数开源框架都使用MIT许可证的原因。
+### 将gitHub上的仓库克隆到本地
+使用git clone命令，将gitHub上的仓库克隆到本地：
+```
+git clone https://github.com/acBool/ACMoreResponseButton.git
+```
+克隆完之后，在本地仓库上新建项目，并完成对应的功能。之后，使用git add、git commit、git push命令，将本地的修改提交，并且推送到远程仓库，这些步骤不再详细介绍。
+### 新建podspec文件
+凡是支持CocoaPods的开源库，都需要具备podspec文件，podspec文件可以理解成是对该开源库的描述，包括作者信息，项目主页等。新建podspec文件使用下述命令：
+```
+pod spec create ACMoreResponseButton
+```
+新建podspec之后:
+
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCE85bdbc6c9e54b27e9b17570e433ed38f/14231)
+
+### 编辑podspec文件
+podspec文件新建之后，里面会有一些信息，可以看做是一个模板，我们只需要稍微对podspec的文件做改动即可。这里贴一下我修改之后的podspec文件：
+```
+s.name         = "ACMoreResponseButton"
+s.version      = "1.1.0"
+s.summary      = "This is a moreResponseArea Button"
+s.homepage     = "https://github.com/acBool/ACMoreResponseButton"
+s.license      = "MIT"
+s.author       = { "wmn" => "acbool@163.com" }
+s.platform     = :ios, "9.0"
+s.source       = { :git => "https://github.com/acBool/ACMoreResponseButton.git", :tag => "1.1.0" }
+s.source_files  = "MoreResponseButtonExample/MoreResponseButtonExample/ACMoreResponseButton/*"
+s.exclude_files = "UIKit"
+s.requires_arc = true
+```
+podspec文件中可以做更多的配置，如果想要了解更多，可以参考gitHub上一些比较好的开源库，看下podspec文件是怎么写的。
+### 分支新建tag，并推送到远程仓库
+在上面的podspec文件中注意到，tag值为1.1.0，因此我们需要在分支上新建一个tag，并且将该tag推送到远程仓库，命令如下：
+```
+// 新建tag
+git tag 1.1.0
+// 将本地的tag推送到远程仓库
+git push --tags
+git push
+```
+这里的tag值需要和podspec中写的保持一致。
+### 验证podspec文件
+在将开源库提交至CocoaPods之前，我们需要验证一下podspec文件，验证命令如下：
+```
+pod spec lint ACMoreResponseButton.podspec
+```
+如果验证不通过，会提示有几个警告，有几个error，且警告信息，error信息都会标识出来。需要注意的是，无论是警告还是error，都需要解决。
+
+如果验证通过，会提示如下图：
+
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCE602b9d73666b2da1d4ce11163c8eddba/14234)
+
+### 提交至CocoaPods
+注意，只有podspec文件验证通过后，才能将开源库提交至CocoaPods，否则即使提交了也不会成功。提交CocoaPods的命令如下：
+```
+pod trunk push ACMoreResponseButton.podspec
+```
+提交成功之后如下图：
+
+![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCE0e90ca88ffac2cb93a737ac0f6578340/14232)
+
+#### 注册CocoaPods
+注意，如果之前没有提交过开源库到CocoaPods，需要先注册一下。注册的命令为：
+```
+// 注意将邮箱名和昵称替换
+pod trunk register test@163.com '昵称名' --description='描述'
+```
+执行完毕后，CocoaPods会给对应的邮箱发送一封确认邮件，点击邮件中的确认链接即可。注册成功后，再执行上面的提交步骤。
+## 私有库支持CocoaPods
+在公司项目中，有时一些通用的功能会封装成框架，这些框架也是可以支持CocoaPods的。所不同的是，我们希望这些框架只为公司内部使用，并不是开源的，可以称之为私有库。
+
+私有库支持CocoaPods的步骤和公有库基本一致，区别就是不需要提交至CocoaPods，也就是验证podspec文件通过后就可以了。
+
+另外就是，使用私有库时，Podfile文件的写法也有细微区别。Podfile文件中引入私有库时的写法：
+```
+// 注意替换私有git域名
+pod 'ProjectName',git=>"https://XXX.git"
+```
