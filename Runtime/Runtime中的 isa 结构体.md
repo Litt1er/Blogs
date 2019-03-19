@@ -238,7 +238,7 @@ inline void objc_object::initIsa(Class cls, bool nonpointer, bool hasCxxDtor)
 
 ISA_MAGIC_VALUE的值是0x001d800000000001ULL，转化成二进制就是0000 0000 0001 1101 1000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001,将每一位对应到isa内部的结构体中，看一下对哪些变量产生了影响：
 
-![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCE1cfb8a77967bfe91ca0d391a085684f1/17506)
+![image](https://github.com/acBool/picture/blob/master/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-03-19%20%E4%B8%8A%E5%8D%8811.54.59.png)
 
 可以看到将nonpointer赋值为1；将magci赋值为110111；其他的仍然都是0。所以说只赋值了isa.magci和isa.nonpointer。
 
