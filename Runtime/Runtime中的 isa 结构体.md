@@ -157,7 +157,7 @@ struct {
 ```
 该结构体共占64位，其内存分布如下：
 
-![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCE871d3c04e87f1cddee7ec49510da477f/17468)
+![image](https://github.com/acBool/picture/blob/master/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-03-19%20%E4%B8%8A%E5%8D%8811.08.14.png)
 
 在了解内个结构体各个变量的作用前，先通过Runtime代码看一下isa结构体是如何初始化的。
 #### isa结构体初始化
