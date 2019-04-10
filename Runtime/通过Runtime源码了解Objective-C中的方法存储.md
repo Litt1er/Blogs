@@ -127,11 +127,11 @@ Objective-C代码经过编译之后，会生成类结构，以及根据代码生
 
 也就是说，编译之后，运行时未初始化之前，类结构中的class_data_bits_t bits，指向的是class_ro_t结构体，示意图如下：
 
-![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCE47cf7aa5a59bc477324961fd9f1e1ac0/17793)
+![image](https://github.com/acBool/picture/blob/master/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-03-21%20%E4%B8%8B%E5%8D%884.04.51.png)
 
 经过运行时初始化之后，class_data_bits_t bits指向正确的class_rw_t结构体，而class_rw_t结构体中的ro指针，指向上面提到的class_ro_t结构体。示意图如下：
 
-![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCEa8eba255dae4af5e3fd329236fd1dff7/17800)
+![image](https://github.com/acBool/picture/blob/master/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-03-21%20%E4%B8%8B%E5%8D%884.16.51.png)
 
 下面看一下Runtime中是如何实现上述操作的。
 #### realizeClass
@@ -291,7 +291,7 @@ isa bits = 8
 ```
 然后在_objc_init函数里面打断点，如下图：
 
-![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCEf6c70cfea88e294a9d5c81736e30b137/17904)
+![image](https://github.com/acBool/picture/blob/master/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-03-22%20%E4%B8%8A%E5%8D%8810.49.55.png)
 
 _objc_init是Runtime初始化的入口函数，断点打在这里，能够确保此时Runtime还未初始化。接下来我们借助lldb来查看编译后类的结构。
 ```
