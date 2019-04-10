@@ -210,7 +210,7 @@ ObjectAssociationMap是map类型，里面也是以key、value的形式存储。�
 ```
 key是从外面传过来的，比如我们上面用到的@selector(personName)，value是上面提到的ObjcAssociation对象，也就是关联对象。终于看到了关联对象，通过下面一整图看一下整个是如何存储的
 
-![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCE41efd7edc0f3ee0397a8452492be2000/18299)
+![image](https://github.com/acBool/picture/blob/master/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-04-09%20%E4%B8%8B%E5%8D%886.52.17.png)
 
 ##### _object_set_associative_reference源码
 _object_set_associative_reference函数中根据所传的参数value是否为nil，分成了不同的逻辑。value为nil的逻辑比较简单，我们首先看一下value为nil所做的处理。
@@ -317,7 +317,7 @@ object->setHasAssociatedObjects();
 ##### _object_set_associative_reference流程
 看完了_object_set_associative_reference的源码，介绍的比较复杂，其实流程相对来说是比较简单的，整个流程可以用下面的流程图来表示：
 
-![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCEf73f48ad1393b9321810e0968534cf0d/18379)
+![image](https://github.com/acBool/picture/blob/master/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-04-10%20%E4%B8%8A%E5%8D%8810.37.17.png)
 
 ##### policy参数
 上面已经多次看到了policy参数，policy参数到底代表什么呢？通过上面的介绍，应该可以猜到了policy的作用。在定义一个属性时，需要使用各种各样的修饰符，如nonatomic,copy,strong等，既然关联对象是为了达到和属性相同的效果，那么关联对象是否也应该有对应的修饰符呢？
@@ -340,7 +340,7 @@ typedef OBJC_ENUM(uintptr_t, objc_AssociationPolicy) {
 ```
 根据其注释，可以得出objc_AssociationPolicy与属性修饰符之间的一个对应关系，如下：
 
-![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCE0ef15ad4719412220808f28834237008/18400)
+![image](https://github.com/acBool/picture/blob/master/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-04-10%20%E4%B8%8A%E5%8D%8810.46.11.png)
 
 这也是为何我们之前的代码，设置关联对象时，使用OBJC_ASSOCIATION_COPY_NONATOMIC的原因。
 
