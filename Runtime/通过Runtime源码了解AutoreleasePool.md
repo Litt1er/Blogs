@@ -386,7 +386,7 @@ pop方法中主要做了两步：
 ### AutoreleasePool和AutoreleasePoolPage的关系
 实际上，Runtime中并没有AutoreleasePool结构的定义，AutoreleasePool是由AutoreleasePoolPage组成的双向链表，如下图：
 
-![image](https://note.youdao.com/yws/public/resource/bba39d75a3d87a96f65a409a0b99df90/xmlnote/WEBRESOURCE482fdcb55597b492d040236ebe5b082b/18879)
+![image](https://github.com/acBool/picture/blob/master/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-04-26%20%E4%B8%8B%E5%8D%885.52.57.png)
 
 在autoreleasepool的开始处，会调用AutoreleasePoolPage的push方法；在autoreleasepool的结束处，会调用AutoreleasePoolPage的pop方法。在AutoreleasePoolPage的push方法中，会往AutoreleasePoolPage中插入哨兵对象，之后的对象依次插入到AutoreleasePoolPage中。如下表示：
 ```
